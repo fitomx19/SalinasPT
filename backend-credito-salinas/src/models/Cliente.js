@@ -80,6 +80,40 @@ class Cliente {
       throw error;
     }
   }
+
+  /**
+   * Buscar clientes por email, nombre o teléfono
+   */
+  static async buscar(query) {
+    try {
+      const searchTerm = `%${query}%`;
+      const [rows] = await pool.query(
+        `SELECT 
+          c.id,
+          c.nombre,
+          c.apellidos,
+          c.email,
+          c.telefono,
+          c.fecha_nacimiento,
+          c.ingreso_mensual,
+          c.fecha_registro,
+          COUNT(s.id) as total_solicitudes,
+          SUM(CASE WHEN s.estado = 'aprobado' THEN 1 ELSE 0 END) as solicitudes_aprobadas
+        FROM clientes c
+        LEFT JOIN solicitudes s ON c.id = s.cliente_id
+        WHERE c.email LIKE ? 
+          OR c.telefono LIKE ? 
+          OR CONCAT(c.nombre, ' ', c.apellidos) LIKE ?
+        GROUP BY c.id
+        ORDER BY c.fecha_registro DESC
+        LIMIT 20`,
+        [searchTerm, searchTerm, searchTerm]
+      );
+      return rows;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = Cliente;

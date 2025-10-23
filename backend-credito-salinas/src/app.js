@@ -6,6 +6,7 @@ require('dotenv').config();
 const sucursalRoutes = require('./routes/sucursal.routes');
 const solicitudRoutes = require('./routes/solicitud.routes');
 const estadisticaRoutes = require('./routes/estadistica.routes');
+const clienteRoutes = require('./routes/cliente.routes');
 
 const app = express();
 
@@ -30,7 +31,8 @@ app.get('/', (req, res) => {
     endpoints: {
       sucursales: '/api/sucursales',
       solicitudes: '/api/solicitudes',
-      estadisticas: '/api/estadisticas'
+      estadisticas: '/api/estadisticas',
+      clientes: '/api/clientes'
     }
   });
 });
@@ -38,6 +40,7 @@ app.get('/', (req, res) => {
 app.use('/api/sucursales', sucursalRoutes);
 app.use('/api/solicitudes', solicitudRoutes);
 app.use('/api/estadisticas', estadisticaRoutes);
+app.use('/api/clientes', clienteRoutes);
 
 // Manejo de rutas no encontradas
 app.use((req, res) => {

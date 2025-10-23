@@ -1,0 +1,219 @@
+{
+  "info": {
+    "name": "Historial Cliente - API Tests",
+    "description": "Colección de endpoints para la feature de Historial de Cliente",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Buscar clientes por email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/clientes/buscar?query=maria",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "clientes", "buscar"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "maria",
+                  "description": "Término de búsqueda (email, nombre o teléfono)"
+                }
+              ]
+            },
+            "description": "Buscar clientes que contengan 'maria' en email, nombre o teléfono"
+          }
+        },
+        {
+          "name": "Buscar clientes por teléfono",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/clientes/buscar?query=5512345671",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "clientes", "buscar"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "5512345671"
+                }
+              ]
+            },
+            "description": "Buscar cliente por número de teléfono"
+          }
+        },
+        {
+          "name": "Buscar clientes por nombre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/clientes/buscar?query=González",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "clientes", "buscar"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "González"
+                }
+              ]
+            },
+            "description": "Buscar clientes por apellido"
+          }
+        },
+        {
+          "name": "Obtener cliente por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/clientes/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "clientes", "1"]
+            },
+            "description": "Obtener información completa de un cliente por su ID"
+          }
+        },
+        {
+          "name": "Obtener historial completo del cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/clientes/1/historial",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "clientes", "1", "historial"]
+            },
+            "description": "Obtener historial completo de solicitudes del cliente con estadísticas"
+          }
+        },
+        {
+          "name": "Buscar - Error: menos de 3 caracteres",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/clientes/buscar?query=ma",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "clientes", "buscar"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "ma"
+                }
+              ]
+            },
+            "description": "Debería retornar error 400 - mínimo 3 caracteres"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flujo completo - Historial de Cliente",
+      "item": [
+        {
+          "name": "Paso 1: Buscar cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has clientes array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.be.an('array');",
+                  "});",
+                  "",
+                  "// Guardar el ID del primer cliente para el siguiente request",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data.length > 0) {",
+                  "    pm.environment.set(\"cliente_id\", jsonData.data[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/clientes/buscar?query=maria",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "clientes", "buscar"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "maria"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Paso 2: Obtener historial del cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has cliente object\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.cliente).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test(\"Response has estadisticas object\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.estadisticas).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test(\"Response has solicitudes array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.solicitudes).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/clientes/{{cliente_id}}/historial",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "clientes", "{{cliente_id}}", "historial"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
