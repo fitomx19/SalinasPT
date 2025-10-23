@@ -37,6 +37,15 @@ app.get('/', (req, res) => {
   });
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'API funcionando correctamente',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.use('/api/sucursales', sucursalRoutes);
 app.use('/api/solicitudes', solicitudRoutes);
 app.use('/api/estadisticas', estadisticaRoutes);

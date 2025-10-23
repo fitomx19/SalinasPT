@@ -1,0 +1,68 @@
+services:
+  # Base de datos MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: salinas_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: salinas_credito
+      MYSQL_USER: salinas_user
+      MYSQL_PASSWORD: salinas_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./script.sql:/docker-entrypoint-initdb.d/script.sql
+    networks:
+      - salinas_network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend-credito-salinas
+      dockerfile: Dockerfile
+    container_name: salinas_backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: salinas_user
+      DB_PASSWORD: salinas_pass
+      DB_NAME: salinas_credito
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - salinas_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend React
+  frontend:
+    build:
+      context: ./frontend-credito-salinas
+      dockerfile: Dockerfile
+    container_name: salinas_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - salinas_network
+
+volumes:
+  mysql_data:
+
+networks:
+  salinas_network:
+    driver: bridge

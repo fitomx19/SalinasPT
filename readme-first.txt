@@ -1,0 +1,1 @@
+Leer primero el README-Docker.md para instalacion , posteriormente los demas README en raiz y en Frontend

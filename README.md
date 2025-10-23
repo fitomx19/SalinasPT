@@ -3,10 +3,12 @@
 
 
 
-1. Instalar dependencias:
+1. Instalar dependencias en frontend-credito-salinas y backend-credito-salinas:
 ```bash
 npm install
 ```
+
+En MySQL ejecutar el archivo script.sql para la generacion de la estructura y algunos datos.
 
 2. Configurar variables de entorno:
    - Copiar `.env.example` a `.env`
