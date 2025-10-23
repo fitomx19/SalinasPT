@@ -1,0 +1,163 @@
+{
+    "info": {
+      "name": "API Crédito Salinas",
+      "description": "API para sistema de solicitud de crédito - Grupo Salinas",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+      {
+        "key": "baseUrl",
+        "value": "http://localhost:3000",
+        "type": "string"
+      }
+    ],
+    "item": [
+      {
+        "name": "Sucursales",
+        "item": [
+          {
+            "name": "Obtener todas las sucursales",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/sucursales",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "sucursales"]
+              }
+            }
+          },
+          {
+            "name": "Obtener sucursal por ID",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/sucursales/:id",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "sucursales", ":id"],
+                "variable": [
+                  {
+                    "key": "id",
+                    "value": "1"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Solicitudes",
+        "item": [
+          {
+            "name": "Crear nueva solicitud",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"cliente\": {\n    \"nombre\": \"Juan\",\n    \"apellidos\": \"Pérez García\",\n    \"email\": \"juan.perez@email.com\",\n    \"telefono\": \"5512345678\",\n    \"fecha_nacimiento\": \"1990-05-15\",\n    \"ingreso_mensual\": 15000\n  },\n  \"solicitud\": {\n    \"sucursal_id\": 1,\n    \"monto_solicitado\": 50000,\n    \"plazo_meses\": 24\n  }\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/solicitudes",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "solicitudes"]
+              }
+            }
+          },
+          {
+            "name": "Simular múltiples solicitudes",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"cantidad\": 10\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/api/solicitudes/simular",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "solicitudes", "simular"]
+              }
+            }
+          },
+          {
+            "name": "Obtener todas las solicitudes",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/solicitudes?limit=100",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "solicitudes"],
+                "query": [
+                  {
+                    "key": "limit",
+                    "value": "100"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Obtener solicitud por ID",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/solicitudes/:id",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "solicitudes", ":id"],
+                "variable": [
+                  {
+                    "key": "id",
+                    "value": "1"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Estadísticas",
+        "item": [
+          {
+            "name": "Obtener estadísticas generales",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/estadisticas",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "estadisticas"]
+              }
+            }
+          },
+          {
+            "name": "Obtener estadísticas por sucursal",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/api/estadisticas/sucursales",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "estadisticas", "sucursales"]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
